@@ -226,7 +226,7 @@ class Opponent: public Racket {
     Opponent(pros::Controller& c) : Racket(c) {}
 
     void ChangeGameMode() {
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2) && master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2) && partner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
             game_mode = !game_mode;
         }
     }
