@@ -2,14 +2,14 @@
 
 ## Description
 
-This is "Pong clone" that runs on the Vex V5 Brain, with a few extra features.
+This is a "Pong clone" that runs on the Vex V5 Brain, with a few extra features.
 
 ## Getting Started
 
 ### Requirements
 
 PROS
-Visual studio code   
+Visual Studio Code   
 Micro USB cord
 Too much free time
 
@@ -17,11 +17,11 @@ Too much free time
 
 1. Star the repo
 2. Download/Clone the repo
-3. Open the VS code workspace
+3. Open the VS Code workspace
 4. Drink water
 5. Connect your Brain to the computer via micro usb
 6. Click "Build & Upload" In the PROS menu
-7. Stop procrastinating and help your teamates
+7. Stop procrastinating and help your teammates
 
 ## Help
 
