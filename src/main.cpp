@@ -13,7 +13,7 @@ using namespace std;
 int player_score = 0;
 int opponent_score = 0;
 const int fat = 480;
-const int notfat = 200;
+const int notfat = 272;
 
 class Ball {
 public:
@@ -54,14 +54,14 @@ static const std::uint32_t gay[21] = {
 
 void Draw() {
     pros::screen::set_pen(color); 
-    pros::screen::draw_circle(x, y, radius);
+    pros::screen::fill_circle(x, y, radius);
 }
 
 void Update() {
     x += speed_x;
     y += speed_y;
 
-    if(y + radius >= notfat || y - radius <= 0) {
+    if(y + radius*7 >= notfat || y - radius <= 0) { // Don't ask me why its rad*7. Remember "It just works"
         pride();
         speed_y *= -1;
     }
@@ -77,10 +77,10 @@ void Update() {
   } 
   void ResetBall() {
     x = fat/2;
-    y = fat/2;
+    y = notfat/2;
 
     pride();
-    int speed_choices[2] = {-7,7};
+    int speed_choices[2] = {-4,4};
     speed_x = speed_choices[rand() % 2];
     speed_y = speed_choices[rand() % 2];
   }
@@ -96,8 +96,8 @@ void LimitMovement() {
             y = 0;
             speed = maxspeed;
         }
-        if(y + height >= notfat) {
-            y = notfat - height;
+    if(height + 32 >= notfat) {// Why plus 32, Say it with "It just works"
+            height = notfat;
             speed = -maxspeed;
         }
 }
@@ -109,6 +109,7 @@ float speed = 0.0f;
 float acceleration = 0.125f;   // how fast you accelerate per second/frame
 float maxspeed = 1.5f;   // top speed
 float damping = 0.225f; // slows when no key pressed (tune)
+
 std::uint32_t color = pros::c::COLOR_WHITE;
 
     Racket(pros::Controller& m) : master(m) {}
@@ -134,27 +135,27 @@ std::uint32_t color = pros::c::COLOR_WHITE;
             } */
             acceleration = 0.25;
             maxspeed = 6;
-            width = 5;
-            height = 25;
-            x = fat - width - 5;
+            //width = 5;
+            //height = 25;
+            
         } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && !master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             acceleration = 0;
-            width = 10;
-            height = 30;
-            x = fat - width - 5;
+            //width = 10;
+            //height = 30;
+           
         } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
             acceleration = 0.125;
             maxspeed = 6;
             //ball_color = BLACK;
-            width = 10;
-            height = 30;
-            x = fat - width - 5;
+            //width = 10;
+            //height = 30;
+            
         } else {
             acceleration = 0.125;
             maxspeed = 6;
-            width = 10;
-            height = 30;
-            x = fat - width - 5;
+            //width = 10;
+            //height = 30;
+            
         }
     }
     
@@ -189,7 +190,7 @@ static const std::uint32_t gay[21] = {
 
     void Draw() {
         pros::screen::set_pen(color); 
-        pros::screen::draw_rect(x, y, width, height);
+        pros::screen::fill_rect(x, y, width, height);
     }
 
     
@@ -212,6 +213,7 @@ static const std::uint32_t gay[21] = {
         speed = -maxspeed;
     }*/
     y += speed;
+    height = y + 30;
 
     LimitMovement();
     }
@@ -247,28 +249,28 @@ class Opponent: public Racket {
         if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
             acceleration = 0.25;
             maxspeed = 6;
-            width = 5;
-            height = 25;
-            x = 5;
+            //width = 5;
+            //height = 25;
+           // x = 5;
         } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             acceleration = 0;
-            width = 10;
+            /*width = 10;
             height = 30;
-            x = 5;
+            x = 5;*/
         } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             acceleration = 0.125;
             maxspeed = 6;
             //ball_color = BLACK;
-            width = 10;
+            /*width = 10;
             height = 30;
-            x = 5;
+            x = 5;*/
         } else {
             acceleration = 0.125;
             maxspeed = 6;
             //ball_color = BLACK;
-            width = 10;
+            /*width = 10;
             height = 30;
-            x = 5;
+            x = 5;*/
         }
     }
 
@@ -290,7 +292,7 @@ class Opponent: public Racket {
         speed = -maxspeed;
     }*/
     y += speed;
-
+    height = y + 30;
 
         LimitMovement();
     }
@@ -308,6 +310,7 @@ class Opponent: public Racket {
                     speed += acceleration;
             }
             y += speed;
+            height = y + 30;
         }
         /*if (speed >  maxspeed) {
         speed =  maxspeed;
@@ -324,12 +327,7 @@ Ball ball;
 Racket player(master);
 Opponent opponent(partner);
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
+
 void initialize() {
     std::srand(pros::millis());
 
@@ -339,65 +337,28 @@ void initialize() {
     ball.speed_x = 2;
     ball.speed_y = 2;
 
-    player.width = 10;
-    player.height = 30;
-    player.x = fat - player.width - 5;
+    player.width = fat - 5;
+    player.height = 50;
+    player.x = fat - 10;
     player.y = notfat/2 - player.height/2;
     player.speed = 0;
 
-    opponent.height = 30;
+    opponent.height = opponent.y + 30;
     opponent.width = 10;
     opponent.x = 5;
-    opponent.y = notfat/2  - opponent.height/2;
+    opponent.y = notfat/2  - 15;
     opponent.speed = 0;
     opponent.game_mode = true;
 
 }
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
+
 void disabled() {}
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
 void competition_initialize() {}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
 void autonomous() {}
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
 void opcontrol() {
 
  
@@ -419,7 +380,7 @@ void opcontrol() {
         opponent.CHEATS(player.color);
 
         //For Checking Collisions
-        if (ball.x >= player.x - ball.radius && ball.y >= player.y && ball.y <= player.y + player.height) {
+        if (ball.x >= player.x - ball.radius && ball.y >= player.y && ball.y <= player.height) {
             if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             ball.color = pros::c::COLOR_BLACK;
             }
@@ -451,7 +412,7 @@ void opcontrol() {
             
         }
 
-        if (ball.x <= opponent.x + opponent.width + ball.radius && ball.y >= opponent.y && ball.y <= opponent.y + opponent.height) {
+        if (ball.x <= opponent.x + opponent.width + ball.radius && ball.y >= opponent.y && ball.y <= opponent.height) {
             if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             ball.color = pros::c::COLOR_BLACK; 
             }
@@ -498,4 +459,3 @@ void opcontrol() {
 	}
 }
 
-/*L0rd_0f_5h@d3s*/
