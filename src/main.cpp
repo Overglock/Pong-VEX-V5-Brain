@@ -212,21 +212,21 @@ class Opponent: public Racket {
             opponent_score ++;
         }
 
-        if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
+        if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
             player_color = pros::c::COLOR_BLACK;
         }
 
-        if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+        if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_A) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
             acceleration = 0.25;
             width = 8;
             height = y + 20;
             x = 5;
-        } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+        } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             acceleration = 0.1;
             width = 10;
             height = y + 30;
             x = 5;
-        } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+        } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && partner.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             acceleration = 0.125;
             width = 10;
             height = y + 30;
@@ -359,7 +359,7 @@ void opcontrol() {
         }
 
         if (ball.x <= opponent.x + opponent.width + ball.radius && ball.y >= opponent.y && ball.y <= opponent.height) {
-            if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+            if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && partner.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             ball.color = pros::c::COLOR_BLACK; 
             }
             opponent.pride();
@@ -379,7 +379,7 @@ void opcontrol() {
                 
             }
             
-            if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+            if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
                 ball.speed_x *= 2; 
             }
 
