@@ -1,26 +1,19 @@
 #include "main.h"
-/*#include <cstdlib>
-#include "pros/colors.h"
-#include "pros/misc.h" 
-#include "pros/screen.hpp"
-#include <cmath> */
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Controller partner(pros::E_CONTROLLER_PARTNER);
 
 using namespace std;
-// if (ball.x + ball.radius >= player.x - player.width)
 int player_score = 0;
 int opponent_score = 0;
 const int fat = 480;
-const int notfat = 272;
+const int notfat = 272; // it should be 240 but if i change it its gonna mess a bunch of things up
 
 class Ball {
 public:
 float x, y;
 int speed_x, speed_y;
 int radius;
-//pros::Color color = pros::Color::white;
 std::uint32_t color = pros::c::COLOR_WHITE;
 //You're welcome Phoebe
 void pride() {
@@ -90,7 +83,6 @@ class Racket {
 
 protected:
 pros::Controller& master;
-//THIS FUNCTION IS THE GOAT
 void LimitMovement() {
     if(y <= 0) {
             y = 0;
@@ -107,7 +99,7 @@ float x, y;
 float width, height;
 float speed = 0.0f;
 float acceleration = 0.125f;   // how fast you accelerate per second/frame
-float maxspeed = 1.5f;   // top speed
+float maxspeed = 1.5f;  // you can figure it out
 float damping = 0.900f; // slows when no key pressed (tune)
 
 std::uint32_t color = pros::c::COLOR_WHITE;
@@ -125,7 +117,6 @@ std::uint32_t color = pros::c::COLOR_WHITE;
 
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A) && !master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
             acceleration = 0.25;
-            maxspeed = 6;
             height = y + 20;
             x = fat - 7;
             
@@ -136,13 +127,11 @@ std::uint32_t color = pros::c::COLOR_WHITE;
            
         } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
             acceleration = 0.125;
-            maxspeed = 6;
             height = y + 30;
             x = fat - 10;
             
         } else {
             acceleration = 0.125;
-            maxspeed = 6;
             height = y + 30;
             x = fat - 10;
         }
@@ -150,27 +139,27 @@ std::uint32_t color = pros::c::COLOR_WHITE;
     
     void pride() {
         static const std::uint32_t gay[21] = {
-    pros::c::COLOR_DARK_GRAY,
-    pros::c::COLOR_MAROON,
-    pros::c::COLOR_ORANGE,
-    pros::c::COLOR_DARK_GREEN,
-    pros::c::COLOR_DARK_BLUE,
-    pros::c::COLOR_DARK_VIOLET,
-    pros::c::COLOR_SADDLE_BROWN,
-    pros::c::COLOR_GRAY,
-    pros::c::COLOR_RED,
-    pros::c::COLOR_GOLD,
-    pros::c::COLOR_LIME,
-    pros::c::COLOR_BLUE,
-    pros::c::COLOR_VIOLET,
-    pros::c::COLOR_BROWN,
-    pros::c::COLOR_LIGHT_GRAY,
-    pros::c::COLOR_PINK,
-    pros::c::COLOR_YELLOW,
-    pros::c::COLOR_GREEN,
-    pros::c::COLOR_SKY_BLUE,
-    pros::c::COLOR_PURPLE,
-    pros::c::COLOR_BEIGE
+         pros::c::COLOR_DARK_GRAY,
+         pros::c::COLOR_MAROON,
+         pros::c::COLOR_ORANGE,
+         pros::c::COLOR_DARK_GREEN,
+         pros::c::COLOR_DARK_BLUE,
+         pros::c::COLOR_DARK_VIOLET,
+         pros::c::COLOR_SADDLE_BROWN,
+         pros::c::COLOR_GRAY,
+         pros::c::COLOR_RED,
+         pros::c::COLOR_GOLD,
+         pros::c::COLOR_LIME,
+         pros::c::COLOR_BLUE,
+         pros::c::COLOR_VIOLET,
+         pros::c::COLOR_BROWN,
+         pros::c::COLOR_LIGHT_GRAY,
+         pros::c::COLOR_PINK,
+         pros::c::COLOR_YELLOW,
+         pros::c::COLOR_GREEN,
+         pros::c::COLOR_SKY_BLUE,
+         pros::c::COLOR_PURPLE,
+         pros::c::COLOR_BEIGE
         };
 
 
@@ -193,15 +182,8 @@ std::uint32_t color = pros::c::COLOR_WHITE;
     if (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) == 0) {
         speed *= damping; // momentum
     }
-
-    /* if (speed >  maxspeed) {
-        speed =  maxspeed;
-    }
-    if (speed < -maxspeed) {
-        speed = -maxspeed;
-    }*/
     y += speed;
-    height = y + 30;
+    height = y + 30; // i hate the pros coordinate system
 
     LimitMovement();
     }
@@ -220,7 +202,7 @@ class Opponent: public Racket {
             game_mode = !game_mode;
         }
     }
-
+    
     void CHEATS(std::uint32_t& player_color) {
         if (partner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
             player_score --;
@@ -236,25 +218,21 @@ class Opponent: public Racket {
 
         if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
             acceleration = 0.25;
-            maxspeed = 6;
             width = 8;
             height = y + 20;
             x = 5;
         } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             acceleration = 0.1;
-            maxspeed = 3;
             width = 10;
-               height = y + 30;
+            height = y + 30;
             x = 5;
         } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             acceleration = 0.125;
-            maxspeed = 6;
             width = 10;
             height = y + 30;
             x = 5;
         } else {
             acceleration = 0.125;
-            maxspeed = 6;
             width = 10;
             height = y + 30;
             x = 5;
@@ -271,14 +249,8 @@ class Opponent: public Racket {
         speed *= damping; // momentum
     }
 
-    /*if (speed >  maxspeed) {
-        speed =  maxspeed;
-    }
-    if (speed < -maxspeed) {
-        speed = -maxspeed;
-    }*/
     y += speed;
-    height = y + 30;
+    height = y + 30; // i hate the pros coordinate system
 
         LimitMovement();
     }
@@ -286,7 +258,7 @@ class Opponent: public Racket {
     void UpdateAlgorithim(int ball_y, std::uint32_t ball_color) { 
         bool isBlack = (ball_color == pros::c::COLOR_BLACK);
         if (isBlack) {
-            pride();
+            pride(); //epilepsy 
         } else {  
             if (y + height/2 > ball_y) { //ball is above
                     speed -= acceleration;
@@ -298,13 +270,6 @@ class Opponent: public Racket {
             y += speed;
             height = y + 30;
         }
-        /*if (speed >  maxspeed) {
-        speed =  maxspeed;
-        }
-
-        if (speed < -maxspeed) {
-        speed = -maxspeed;
-        }*/
         LimitMovement();
     }
 };
@@ -365,7 +330,7 @@ void opcontrol() {
         player.CHEATS(opponent.color);
         opponent.CHEATS(player.color);
 
-        //For Checking Collisions
+        // Don't worry, I hate this as much as you
         if (ball.x >= player.x - ball.radius && ball.y >= player.y && ball.y <= player.height) {
             if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             ball.color = pros::c::COLOR_BLACK;
@@ -390,11 +355,6 @@ void opcontrol() {
             if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
                 ball.speed_x *= 2; 
             }
-            /*if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-            ball.speed_x = -16;
-        } else {
-            ball.speed_x = -7;
-        }*/
             
         }
 
@@ -422,12 +382,7 @@ void opcontrol() {
             if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
                 ball.speed_x *= 2; 
             }
-            /*if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-            ball.speed_x = 16;
-        } else {
-            ball.speed_x = 7;
-        } */
-            
+
         }
 
         //This for Drawing
@@ -441,7 +396,7 @@ void opcontrol() {
         pros::screen::print(pros::E_TEXT_LARGE, 113, 5, "%d", opponent_score);
         pros::screen::print(pros::E_TEXT_LARGE, 353, 5, "%d", player_score);
 
-		pros::delay(20);                               // Run for 20 ms then update
+		pros::delay(20); // Run for 20 ms then update
 	}
 }
 
