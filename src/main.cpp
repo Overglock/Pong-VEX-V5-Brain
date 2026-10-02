@@ -96,7 +96,7 @@ void LimitMovement() {
             y = 0;
             speed = maxspeed;
         }
-    if(height + 32 >= notfat) {// Why plus 32, Say it with "It just works"
+    if(height + 32 >= notfat) {// Why plus 32, Say it with me "It just works"
             height = notfat;
             speed = -maxspeed;
         }
@@ -108,7 +108,7 @@ float width, height;
 float speed = 0.0f;
 float acceleration = 0.125f;   // how fast you accelerate per second/frame
 float maxspeed = 1.5f;   // top speed
-float damping = 0.225f; // slows when no key pressed (tune)
+float damping = 0.900f; // slows when no key pressed (tune)
 
 std::uint32_t color = pros::c::COLOR_WHITE;
 
@@ -123,44 +123,33 @@ std::uint32_t color = pros::c::COLOR_WHITE;
             opponent_score --;
         }
 
-        //if (IsKeyPressed(KEY_SLASH)) {
-        //    opponent_color = BLACK;
-        //} 
-
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A) && !master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-            /*if (IsKeyPressed(KEY_DOWN)) {
-                y = y + 240;
-            } else if (IsKeyPressed(KEY_UP)) {
-                y = y - 240;
-            } */
             acceleration = 0.25;
             maxspeed = 6;
-            //width = 5;
-            //height = 25;
+            height = y + 20;
+            x = fat - 7;
             
         } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && !master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-            acceleration = 0;
-            //width = 10;
-            //height = 30;
+            acceleration = 0.1;
+            height = y + 30;
+            x = fat - 10;
            
         } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
             acceleration = 0.125;
             maxspeed = 6;
-            //ball_color = BLACK;
-            //width = 10;
-            //height = 30;
+            height = y + 30;
+            x = fat - 10;
             
         } else {
             acceleration = 0.125;
             maxspeed = 6;
-            //width = 10;
-            //height = 30;
-            
+            height = y + 30;
+            x = fat - 10;
         }
     }
     
     void pride() {
-static const std::uint32_t gay[21] = {
+        static const std::uint32_t gay[21] = {
     pros::c::COLOR_DARK_GRAY,
     pros::c::COLOR_MAROON,
     pros::c::COLOR_ORANGE,
@@ -182,11 +171,11 @@ static const std::uint32_t gay[21] = {
     pros::c::COLOR_SKY_BLUE,
     pros::c::COLOR_PURPLE,
     pros::c::COLOR_BEIGE
-};
+        };
 
 
     color = gay[rand() % 21];
-}
+    }
 
     void Draw() {
         pros::screen::set_pen(color); 
@@ -196,13 +185,12 @@ static const std::uint32_t gay[21] = {
     
 
     void Update() {
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {   
+    if (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) > 0) {   
         speed -= acceleration;
-    }
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+    } else if (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) < 0) {
         speed += acceleration;
     }
-    if (!master.get_digital(pros::E_CONTROLLER_DIGITAL_X) && !master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+    if (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) == 0) {
         speed *= damping; // momentum
     }
 
@@ -228,7 +216,7 @@ class Opponent: public Racket {
     Opponent(pros::Controller& c) : Racket(c) {}
 
     void ChangeGameMode() {
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2) && partner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+        if (partner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2) && partner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
             game_mode = !game_mode;
         }
     }
@@ -249,39 +237,37 @@ class Opponent: public Racket {
         if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
             acceleration = 0.25;
             maxspeed = 6;
-            //width = 5;
-            //height = 25;
-           // x = 5;
+            width = 8;
+            height = y + 20;
+            x = 5;
         } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-            acceleration = 0;
-            /*width = 10;
-            height = 30;
-            x = 5;*/
+            acceleration = 0.1;
+            maxspeed = 3;
+            width = 10;
+               height = y + 30;
+            x = 5;
         } else if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && partner.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             acceleration = 0.125;
             maxspeed = 6;
-            //ball_color = BLACK;
-            /*width = 10;
-            height = 30;
-            x = 5;*/
+            width = 10;
+            height = y + 30;
+            x = 5;
         } else {
             acceleration = 0.125;
             maxspeed = 6;
-            //ball_color = BLACK;
-            /*width = 10;
-            height = 30;
-            x = 5;*/
+            width = 10;
+            height = y + 30;
+            x = 5;
         }
     }
 
     void UpdateP2() {
-    if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {   
+    if (partner.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) > 0) {   
         speed -= acceleration;
-    }
-    if (partner.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+    } else if (partner.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) < 0) {
         speed += acceleration;
-    }
-    if (!partner.get_digital(pros::E_CONTROLLER_DIGITAL_UP) && !partner.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+    }   
+    if (partner.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) == 0) {
         speed *= damping; // momentum
     }
 
@@ -447,11 +433,11 @@ void opcontrol() {
         //This for Drawing
         pros::screen::set_eraser(pros::c::COLOR_BLACK);
         pros::screen::erase();
-        pros::screen::set_pen(pros::c::COLOR_WHITE);
-        pros::screen::draw_line(fat/2,0,fat/2,notfat);
         ball.Draw();
         opponent.Draw();
         player.Draw();
+        pros::screen::set_pen(pros::c::COLOR_WHITE);
+        pros::screen::draw_line(fat/2,0,fat/2,notfat);
         pros::screen::print(pros::E_TEXT_LARGE, 113, 5, "%d", opponent_score);
         pros::screen::print(pros::E_TEXT_LARGE, 353, 5, "%d", player_score);
 
